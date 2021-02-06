@@ -1,0 +1,24 @@
+{
+ "alarms": [
+  {
+   "alarm_date_time": "23:57 20.01.2021",
+   "alarm_title": "Hey",
+   "alarm_sub_title": "Hello"
+  },
+  {
+   "alarm_date_time": "23:55 20.01.2021",
+   "alarm_title": "Go",
+   "alarm_sub_title": "Baby"
+  },
+  {
+   "alarm_date_time": "00:03 21.01.2021",
+   "alarm_title": "Go",
+   "alarm_sub_title": "Baby"
+  },
+  {
+   "alarm_date_time": "00:06 21.01.2021",
+   "alarm_title": "Go",
+   "alarm_sub_title": "Baby"
+  }
+ ]
+}
