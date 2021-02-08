@@ -16,7 +16,7 @@ $ go run main.go notification_os.go
 ```
 
 #### Yapılacaklar
-- // todo (:
-- GUI
-- Görev çubuğundan yönetebilme
-- ..
+- [ ] // todo (:
+- [ ] GUI
+- [ ] Görev çubuğundan yönetebilme
+- [ ] ..
