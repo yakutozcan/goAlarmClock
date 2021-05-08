@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/signal"
 	"time"
 )
 
@@ -31,27 +32,58 @@ func main() {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
 	var alarms Alarms
-	_ = json.Unmarshal(byteValue, &alarms)
+	err = json.Unmarshal(byteValue, &alarms)
+	if err != nil {
+		log.Fatalf("Unmarshaling alarms failed: %s", err.Error())
+	}
 
+	//create a  buffered channel for interupt signal
+	is := make(chan os.Signal, 1)
+	//notify this channel on interupt
+	signal.Notify(is, os.Interrupt)
+
+	//create a channel for done signal
+	ds := make(chan struct{})
+
+	//create ticker
 	systemTimeTicker := time.NewTicker(time.Second * 1)
+
+	//start main loop
 	go func() {
-		for range systemTimeTicker.C {
-			localTime := time.Now().Format("15:04 02.01.2006")
-			for i := 0; i < len(alarms.Alarms); i++ {
-				if localTime == alarms.Alarms[i].AlarmDateTime {
-					Notification(alarms.Alarms[i].AlarmTitle, alarms.Alarms[i].AlarmSubTitle, "⏰ "+alarms.Alarms[i].AlarmDateTime+" ⏰")
-					alarms.Alarms[i].AlarmDateTime = time.Now().AddDate(0, 0, 1).Format("15:04 02.01.2006")
-					file, _ := json.MarshalIndent(alarms, "", " ")
-					writeErr := ioutil.WriteFile("alarm.json", file, 0644)
-					if writeErr != nil {
-						log.Fatal("Can not write file " + err.Error())
+		defer close(ds)
+		for {
+			select {
+			case <-systemTimeTicker.C:
+				localTime := time.Now().Format("15:04 02.01.2006")
+				for i := 0; i < len(alarms.Alarms); i++ {
+					if localTime == alarms.Alarms[i].AlarmDateTime {
+						Notification(alarms.Alarms[i].AlarmTitle, alarms.Alarms[i].AlarmSubTitle, "⏰ "+alarms.Alarms[i].AlarmDateTime+" ⏰")
+						alarms.Alarms[i].AlarmDateTime = time.Now().AddDate(0, 0, 1).Format("15:04 02.01.2006")
+						file, _ := json.MarshalIndent(alarms, "", " ")
+						writeErr := ioutil.WriteFile("alarm.json", file, 0644)
+						if writeErr != nil {
+							log.Fatal("Can not write file " + err.Error())
+						}
 					}
 				}
+			case <-ds:
+				return
 			}
 		}
 	}()
 
-	wait := make(chan bool)
+	//wait for interupt signal
+	<-is
 
-	<-wait
+	//close interupt signal channel
+	close(is)
+
+	//stop ticker
+	systemTimeTicker.Stop()
+
+	//send done signal
+	ds <- struct{}{}
+
+	//wait until done signal channel is closed
+	<-ds
 }
