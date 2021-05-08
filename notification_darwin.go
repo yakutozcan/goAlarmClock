@@ -1,6 +1,10 @@
 package main
 
-import notifier "github.com/deckarep/gosx-notifier"
+import (
+	"log"
+
+	notifier "github.com/deckarep/gosx-notifier"
+)
 
 func Notification(title, subTitle, timeTitle string) {
 
