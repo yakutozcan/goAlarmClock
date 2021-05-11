@@ -8,6 +8,7 @@
 #### Kütüphaneler
 * [gosx-notifier](github.com/deckarep/gosx-notifier) - A Go lib for sending desktop notifications to OSX Mountain Lion's (10.8 or higher REQUIRED) Notification Center.
 * [toast.v1](gopkg.in/toast.v1) - A go package for Windows 10 toast notifications.
+* [dbus](github.com/godbus/dbus) - Native Go bindings for D-Bus.
 
 #### Geliştirme & Kurulum
 ``` sh
